@@ -1,0 +1,73 @@
+<!-- custom tag -->
+<style>
+  div {
+    width: 50px;
+    height: 50px;
+    background-color: blue;
+    border: 2px solid rgb(100, 0, 0);
+    margin: 2px;
+  }
+</style>
+
+<body>
+  <div></div>
+  <custom-box data-count=""></custom-box>
+  <custom-box data-count=""></custom-box>
+</body>
+
+<template id="box">
+  <style>
+    div {
+      background-color: black;
+      width: 50px;
+      height: 50px;
+      border: 2px solid rgb(100, 0, 0);
+      margin: 2px;
+    }
+    .lighten {
+      background-color: #666;
+    }
+  </style>
+  <div></div>
+</template>
+
+<script>
+  'use strict'
+
+  class custom_box extends HTMLElement {
+    connectedCallback() {
+      this.attachShadow({ mode: 'open' });
+      this.shadowRoot.append(box.content.cloneNode(true));
+      const div = this.shadowRoot.querySelector('div');
+
+      div.addEventListener('click', $=> {
+        let count = parseInt(this.getAttribute('data-count')) || false
+        this.setAttribute('data-count', ++count);
+      })
+
+      const add_class = () => {
+        div.classList.add('lighten');
+      }
+      const remove_class = () => {
+        div.classList.remove('lighten');
+      }
+
+      div.addEventListener('mousedown', add_class);
+      div.addEventListener('mouseup', remove_class);
+      div.addEventListener('mouseleave', remove_class);
+
+      div.addEventListener('touchstart', add_class);
+      div.addEventListener('touchend', remove_class);
+      div.addEventListener('touchcancel', remove_class);
+    }
+    static get observedAttributes() {
+      return ['data-count']
+    }
+    attributeChangedCallback(name, oldValue, newValue) {
+
+    }
+  }
+
+  // web components
+  customElements.define('custom-box', custom_box);
+</script>
